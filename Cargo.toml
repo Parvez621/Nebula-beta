@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "crates/inference-core",
+    "crates/transport",
+    "crates/node-agent",
+    "crates/proto",
+]
+
+resolver = "2"
