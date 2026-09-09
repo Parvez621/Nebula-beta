@@ -1,3 +1,5 @@
 *.gguf
 .env
 vendor/llama.cpp/build
+/target/
+.vscode/

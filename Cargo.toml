@@ -6,4 +6,4 @@ members = [
     "crates/proto",
 ]
 
-resolver = "2"
+resolver = "3"
