@@ -1,3 +1,4 @@
+mod network;
 use std::fs;
 use std::time::Duration;
 use std::thread;
@@ -105,14 +106,8 @@ fn main() {
 
     println!("CPU cores       : {}", resources.cpu_cores);
     println!("CPU usage       : {:.2}%", resources.cpu_usage_percent);
-    println!(
-        "Total RAM       : {} MB",
-        resources.total_memory_mb
-    );
-    println!(
-        "Available RAM   : {} MB",
-        resources.available_memory_mb
-    );
+    println!("Total RAM       : {} MB",resources.total_memory_mb);
+    println!("Available RAM   : {} MB",resources.available_memory_mb);
 
     println!();
     println!("READY");
