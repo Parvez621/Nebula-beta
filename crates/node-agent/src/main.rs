@@ -1,4 +1,6 @@
 mod network;
+
+use std::env;
 use std::fs;
 use std::time::Duration;
 use std::thread;
@@ -98,17 +100,40 @@ fn detect_resources() -> NodeResources {
 }
 
 fn main() {
-    println!("Nebula Node Agent");
-    println!("=================");
-    println!();
+    let args: Vec<String> = env::args().collect();
 
-    let resources = detect_resources();
+    if args.len() < 2 {
+        println!("Nebula Node Agent");
+        println!();
+        println!("Usage:");
+        println!("  nebula-agent server");
+        println!("  nebula-agent connect <address>");
+        return;
+    }
 
-    println!("CPU cores       : {}", resources.cpu_cores);
-    println!("CPU usage       : {:.2}%", resources.cpu_usage_percent);
-    println!("Total RAM       : {} MB",resources.total_memory_mb);
-    println!("Available RAM   : {} MB",resources.available_memory_mb);
+    match args[1].as_str() {
+        "server" => {
+            println!("Starting Nebula server...");
 
-    println!();
-    println!("READY");
+            if let Err(error) = network::server::start_server("0.0.0.0:9000") {
+                eprintln!("Server error: {}", error);
+            }
+        }
+
+        "connect" => {
+            if args.len() < 3 {
+                eprintln!("Missing server address");
+                eprintln!("Example: nebula-agent connect 127.0.0.1:9000");
+                return;
+            }
+
+            if let Err(error) = network::client::connect(&args[2]) {
+                eprintln!("Connection error: {}", error);
+            }
+        }
+
+        _ => {
+            eprintln!("Unknown command: {}", args[1]);
+        }
+    }
 }

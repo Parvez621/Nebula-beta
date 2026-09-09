@@ -4,23 +4,35 @@ use std::net::TcpListener;
 pub fn start_server(address: &str) -> std::io::Result<()> {
     let listener = TcpListener::bind(address)?;
 
-    println!("TCP server listening on {}", address);
+    println!("Nebula network server listening on {}", address);
 
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
-                println!("Incoming connection from {:?}", stream.peer_addr());
+                println!("Connection from {:?}", stream.peer_addr());
 
                 let mut buffer = [0u8; 1024];
 
                 let bytes_read = stream.read(&mut buffer)?;
 
-                if bytes_read > 0 {
-                    let message = String::from_utf8_lossy(&buffer[..bytes_read]);
+                if bytes_read == 0 {
+                    continue;
+                }
 
-                    println!("Received: {}", message);
+                let message = String::from_utf8_lossy(&buffer[..bytes_read]);
 
-                    stream.write_all(b"HELLO_FROM_NEBULA")?;
+                match message.trim() {
+                    "HELLO" => {
+                        println!("Received HELLO");
+
+                        stream.write_all(b"HELLO_ACK")?;
+                    }
+
+                    _ => {
+                        println!("Unknown message: {}", message.trim());
+
+                        stream.write_all(b"UNKNOWN_MESSAGE")?;
+                    }
                 }
             }
 
